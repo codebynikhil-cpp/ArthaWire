@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./finpulse.db
+      - SIMULATION_MODE=true
+      - MAX_MONITORED_CREATORS=10
+      - DEFAULT_POLL_INTERVAL_MINUTES=15
+      - USE_FINBERT_TRANSFORMERS=true
+    volumes:
+      - ./backend/finpulse.db:/app/finpulse.db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws
+    depends_on:
+      - backend
