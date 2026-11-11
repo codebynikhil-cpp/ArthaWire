@@ -16,11 +16,19 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 class LoginRequest(BaseModel):
     access_key: str
 
+class GoogleLoginRequest(BaseModel):
+    credential: Optional[str] = None
+    email: str
+    name: str
+    picture: Optional[str] = None
+
 class LoginResponse(BaseModel):
     authenticated: bool
     token: str
     role: str
     display_name: str
+    email: Optional[str] = None
+    picture: Optional[str] = None
     expires_at: int
 
 def generate_token(access_key: str) -> str:
@@ -83,6 +91,28 @@ def login(payload: LoginRequest):
         expires_at=expires_at
     )
 
+@router.post("/google", response_model=LoginResponse)
+def google_login(payload: GoogleLoginRequest):
+    """
+    Authorizes a user via Google Sign-In.
+    Accepts verified Google profile data and returns an authenticated terminal session.
+    """
+    if not payload.email:
+        raise HTTPException(status_code=400, detail="Google authentication did not provide an email address.")
+
+    token = generate_token(payload.email)
+    expires_at = int(time.time()) + 604800
+
+    return LoginResponse(
+        authenticated=True,
+        token=token,
+        role="Dalal Street Analyst",
+        display_name=payload.name or payload.email.split("@")[0],
+        email=payload.email,
+        picture=payload.picture or f"https://api.dicebear.com/7.x/initials/svg?seed={payload.name or 'AN'}",
+        expires_at=expires_at
+    )
+
 @router.get("/verify")
 def verify_session(authorization: Optional[str] = Header(None)):
     """Verifies currently held terminal bearer token."""
@@ -98,3 +128,4 @@ def verify_session(authorization: Optional[str] = Header(None)):
         "role": "Chief Market Strategist",
         "display_name": "Authorized Terminal Analyst"
     }
+

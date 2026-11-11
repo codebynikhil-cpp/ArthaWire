@@ -159,6 +159,20 @@ export const api = {
       }
     ),
 
+  loginWithGoogle: (data: { email: string; name: string; picture?: string; credential?: string }) =>
+    fetchJSON<{
+      authenticated: boolean;
+      token: string;
+      role: string;
+      display_name: string;
+      email?: string;
+      picture?: string;
+      expires_at: number;
+    }>("/auth/google", {
+      method: "POST",
+      body: JSON.stringify(data)
+    }),
+
   verifyAuth: () =>
     fetchJSON<{ authenticated: boolean; role: string; display_name: string }>("/auth/verify"),
 

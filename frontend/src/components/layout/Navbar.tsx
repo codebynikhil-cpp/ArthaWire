@@ -26,6 +26,8 @@ interface NavbarProps {
   onSearchChange?: (q: string) => void;
   onLockTerminal?: () => void;
   userRole?: string;
+  userEmail?: string;
+  userPicture?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -39,7 +41,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery = "",
   onSearchChange,
   onLockTerminal,
-  userRole = "Terminal Analyst"
+  userRole = "Terminal Analyst",
+  userEmail,
+  userPicture
 }) => {
   const isLiveX = ingestionMode === "LIVE_X_API";
 
@@ -145,16 +149,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </button>
 
-          {/* Terminal Lock Button */}
+          {/* Terminal User Profile & Lock / Sign Out */}
           {onLockTerminal && (
-            <button
-              onClick={onLockTerminal}
-              title="Lock Terminal Desk"
-              className="flex items-center space-x-1.5 px-2 py-1 text-xs text-fin-muted hover:text-amber-400 bg-fin-card hover:bg-fin-hover rounded border border-fin-border transition"
-            >
-              <Lock className="w-3 h-3 text-amber-400" />
-              <span className="hidden md:inline text-[11px] font-mono">Lock</span>
-            </button>
+            <div className="flex items-center space-x-2 pl-1 border-l border-fin-border">
+              {userPicture && (
+                <img
+                  src={userPicture}
+                  alt="Google Account"
+                  className="w-6 h-6 rounded-full border border-blue-400/40 object-cover"
+                />
+              )}
+              <button
+                onClick={onLockTerminal}
+                title={userEmail ? `Signed in as ${userEmail} — Click to Sign Out` : "Lock Terminal Desk"}
+                className="flex items-center space-x-1 px-2 py-1 text-xs text-fin-muted hover:text-amber-400 bg-fin-card hover:bg-fin-hover rounded border border-fin-border transition"
+              >
+                <Lock className="w-3 h-3 text-amber-400" />
+                <span className="hidden sm:inline text-[11px] font-mono">
+                  {userEmail ? "Sign Out" : "Lock"}
+                </span>
+              </button>
+            </div>
           )}
         </div>
       </div>

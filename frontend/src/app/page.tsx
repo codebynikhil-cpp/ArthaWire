@@ -52,6 +52,8 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
   const [userRole, setUserRole] = useState<string>("Authorized Terminal Analyst");
+  const [userEmail, setUserEmail] = useState<string>("");
+  const [userPicture, setUserPicture] = useState<string>("");
 
   const [currentTab, setCurrentTab] = useState<TabKey>("overview");
   const [wsConnected, setWsConnected] = useState(false);
@@ -86,9 +88,13 @@ export default function Home() {
   useEffect(() => {
     const token = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_token") : null;
     const role = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_role") : null;
+    const email = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_email") : null;
+    const picture = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_picture") : null;
     if (token) {
       setIsAuthenticated(true);
       if (role) setUserRole(role);
+      if (email) setUserEmail(email);
+      if (picture) setUserPicture(picture);
     }
     setIsCheckingAuth(false);
   }, []);
@@ -98,8 +104,12 @@ export default function Home() {
       localStorage.removeItem("arthawire_auth_token");
       localStorage.removeItem("arthawire_auth_role");
       localStorage.removeItem("arthawire_auth_user");
+      localStorage.removeItem("arthawire_auth_email");
+      localStorage.removeItem("arthawire_auth_picture");
     }
     setIsAuthenticated(false);
+    setUserEmail("");
+    setUserPicture("");
   };
 
   const handleResetCreators = async () => {
@@ -288,9 +298,11 @@ export default function Home() {
   if (!isAuthenticated) {
     return (
       <TerminalLoginGate
-        onAuthenticated={(role, name) => {
+        onAuthenticated={(role, name, email, picture) => {
           setIsAuthenticated(true);
           setUserRole(role);
+          if (email) setUserEmail(email);
+          if (picture) setUserPicture(picture);
           loadOverview();
           loadCreators();
           loadPosts(1);
@@ -317,6 +329,8 @@ export default function Home() {
         searchQuery={filters.search || ""}
         onLockTerminal={handleLockTerminal}
         userRole={userRole}
+        userEmail={userEmail}
+        userPicture={userPicture}
         onSearchChange={(q) => {
           setFilters((prev) => ({ ...prev, search: q }));
           if (currentTab !== "feed" && q.trim().length > 0) {
