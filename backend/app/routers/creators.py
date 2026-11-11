@@ -147,3 +147,36 @@ async def sync_single_creator(creator_id: int, db: Session = Depends(get_db)):
 
     res = await ingestion_manager.sync_creator(db, creator)
     return res
+
+@router.post("/reset-defaults")
+async def reset_creators_to_defaults(db: Session = Depends(get_db)):
+    """Resets the creator pool to the 3 curated sample creators, freeing up 7 slots."""
+    from app.data.seed_data import INITIAL_CREATORS
+    
+    # Remove existing creators
+    db.query(Creator).delete()
+    db.commit()
+
+    # Re-seed the 3 creators
+    for c_data in INITIAL_CREATORS:
+        creator = Creator(
+            x_user_id=c_data["x_user_id"],
+            username=c_data["username"],
+            display_name=c_data["display_name"],
+            description=c_data["description"],
+            profile_image_url=c_data["profile_image_url"],
+            followers_count=c_data["followers_count"],
+            is_active=c_data["is_active"]
+        )
+        db.add(creator)
+    db.commit()
+
+    # Sync them
+    creators = db.query(Creator).all()
+    for c in creators:
+        try:
+            await ingestion_manager.sync_creator(db, c)
+        except Exception:
+            pass
+
+    return {"status": "success", "message": "Reset to 3 curated creators (7 slots free)", "count": len(creators)}

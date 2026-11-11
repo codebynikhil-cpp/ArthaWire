@@ -10,7 +10,8 @@ import {
   Search,
   CheckCircle2,
   AlertCircle,
-  Database
+  Database,
+  Lock
 } from "lucide-react";
 
 interface NavbarProps {
@@ -23,6 +24,8 @@ interface NavbarProps {
   ingestionMode: string;
   searchQuery?: string;
   onSearchChange?: (q: string) => void;
+  onLockTerminal?: () => void;
+  userRole?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -34,7 +37,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleNotifications,
   ingestionMode,
   searchQuery = "",
-  onSearchChange
+  onSearchChange,
+  onLockTerminal,
+  userRole = "Terminal Analyst"
 }) => {
   const isLiveX = ingestionMode === "LIVE_X_API";
 
@@ -139,6 +144,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               </span>
             )}
           </button>
+
+          {/* Terminal Lock Button */}
+          {onLockTerminal && (
+            <button
+              onClick={onLockTerminal}
+              title="Lock Terminal Desk"
+              className="flex items-center space-x-1.5 px-2 py-1 text-xs text-fin-muted hover:text-amber-400 bg-fin-card hover:bg-fin-hover rounded border border-fin-border transition"
+            >
+              <Lock className="w-3 h-3 text-amber-400" />
+              <span className="hidden md:inline text-[11px] font-mono">Lock</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

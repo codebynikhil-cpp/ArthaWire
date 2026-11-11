@@ -30,6 +30,10 @@ class Settings:
     USE_FINBERT_TRANSFORMERS: bool = os.getenv("USE_FINBERT_TRANSFORMERS", "true").lower() in ("true", "1", "yes")
     FINBERT_MODEL_NAME: str = os.getenv("FINBERT_MODEL_NAME", "ProsusAI/finbert")
     
+    # Terminal Authentication
+    TERMINAL_ACCESS_KEY: str = os.getenv("TERMINAL_ACCESS_KEY", "ARTHA-2026")
+    JWT_SECRET: str = os.getenv("JWT_SECRET", "arthawire-secure-dalal-street-terminal-key-2026")
+    
     # CORS
     CORS_ORIGINS: list = [
         "http://localhost:3000",

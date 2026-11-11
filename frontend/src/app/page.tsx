@@ -20,6 +20,7 @@ import { AlertRuleManager } from "../components/alerts/AlertRuleManager";
 import { NotificationDrawer } from "../components/alerts/NotificationDrawer";
 import { IngestionControl } from "../components/settings/IngestionControl";
 import { CostEstimator } from "../components/settings/CostEstimator";
+import { TerminalLoginGate } from "../components/auth/TerminalLoginGate";
 import {
   Creator,
   Post,
@@ -47,6 +48,11 @@ import {
 } from "lucide-react";
 
 export default function Home() {
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<string>("Authorized Terminal Analyst");
+
   const [currentTab, setCurrentTab] = useState<TabKey>("overview");
   const [wsConnected, setWsConnected] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -75,6 +81,39 @@ export default function Home() {
     market_impact?: string;
     search?: string;
   }>({});
+
+  // Check existing session token on mount
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_token") : null;
+    const role = typeof window !== "undefined" ? localStorage.getItem("arthawire_auth_role") : null;
+    if (token) {
+      setIsAuthenticated(true);
+      if (role) setUserRole(role);
+    }
+    setIsCheckingAuth(false);
+  }, []);
+
+  const handleLockTerminal = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("arthawire_auth_token");
+      localStorage.removeItem("arthawire_auth_role");
+      localStorage.removeItem("arthawire_auth_user");
+    }
+    setIsAuthenticated(false);
+  };
+
+  const handleResetCreators = async () => {
+    if (confirm("Reset to 3 curated Indian creators and free up 7 slots for your own handles?")) {
+      try {
+        await api.resetCreatorsToDefaults();
+        loadCreators();
+        loadOverview();
+        loadPosts(1);
+      } catch (err: any) {
+        alert(err.message || "Failed to reset creators");
+      }
+    }
+  };
 
   // Fetch initial data
   const loadOverview = useCallback(() => {
@@ -234,6 +273,36 @@ export default function Home() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
   const activeCount = creators.filter((c) => c.is_active).length;
 
+  // Authentication Gate Check
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-[#070A0F] flex items-center justify-center font-mono text-xs text-fin-muted">
+        <div className="flex items-center space-x-2">
+          <div className="w-4 h-4 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+          <span>INITIALIZING ARTHAWIRE SECURITY NODE...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <TerminalLoginGate
+        onAuthenticated={(role, name) => {
+          setIsAuthenticated(true);
+          setUserRole(role);
+          loadOverview();
+          loadCreators();
+          loadPosts(1);
+          loadMarketIntel();
+          loadConsensus();
+          loadAlertsAndNotifications();
+          loadIngestionStatus();
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-fin-bg text-fin-text flex flex-col font-sans">
       {/* Top Navigation */}
@@ -246,6 +315,8 @@ export default function Home() {
         onToggleNotifications={() => setIsDrawerOpen(true)}
         ingestionMode={ingestionStatus?.mode || "LIVE_X_API"}
         searchQuery={filters.search || ""}
+        onLockTerminal={handleLockTerminal}
+        userRole={userRole}
         onSearchChange={(q) => {
           setFilters((prev) => ({ ...prev, search: q }));
           if (currentTab !== "feed" && q.trim().length > 0) {
@@ -438,13 +509,22 @@ export default function Home() {
                     Surveillance cohort of curated Dalal Street market commentators with posting frequency and company focus
                   </p>
                 </div>
-                <button
-                  onClick={() => setIsAddCreatorOpen(true)}
-                  disabled={creators.length >= 10}
-                  className="px-3 py-1.5 text-xs font-mono font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded transition disabled:opacity-50"
-                >
-                  Add Creator ({creators.length}/10)
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleResetCreators}
+                    title="Resets database to 3 curated creators, freeing up 7 slots for your own choices"
+                    className="px-2.5 py-1.5 text-xs font-mono font-medium bg-fin-card hover:bg-fin-hover text-fin-secondaryText hover:text-white border border-fin-border rounded transition"
+                  >
+                    Reset to 3 Creators (7 Free Slots)
+                  </button>
+                  <button
+                    onClick={() => setIsAddCreatorOpen(true)}
+                    disabled={creators.length >= 10}
+                    className="px-3 py-1.5 text-xs font-mono font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded transition disabled:opacity-50"
+                  >
+                    Add Creator ({creators.length}/10)
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">

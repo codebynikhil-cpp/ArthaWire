@@ -16,7 +16,7 @@ from app.models.alert import AlertRule
 from app.data.seed_data import INITIAL_CREATORS, INDIAN_MARKET_ENTITIES, DEFAULT_ALERTS
 from app.ingestion.scheduler import polling_scheduler
 from app.ingestion.checkpointer import ingestion_manager
-from app.routers import creators, posts, analytics, insights, alerts, ingestion, websockets
+from app.routers import creators, posts, analytics, insights, alerts, ingestion, websockets, auth
 from app.routers.websockets import ws_manager
 
 logging.basicConfig(
@@ -120,6 +120,7 @@ app.add_middleware(
 )
 
 # Mount Routers
+app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(creators.router, prefix=settings.API_V1_PREFIX)
 app.include_router(posts.router, prefix=settings.API_V1_PREFIX)
 app.include_router(analytics.router, prefix=settings.API_V1_PREFIX)
@@ -136,7 +137,7 @@ def root():
         "status": "operational",
         "docs_url": "/docs",
         "market_focus": "Indian Financial Market (NSE/BSE)",
-        "disclaimer": "FinPulse is a research and intelligence assistant, not investment advice."
+        "disclaimer": "ArthaWire is a research and intelligence assistant, not investment advice."
     }
 
 @app.get("/health")

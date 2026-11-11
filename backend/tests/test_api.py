@@ -12,10 +12,23 @@ def client():
     with TestClient(app) as test_client:
         yield test_client
 
-def test_health_and_root(client):
-    res = client.get("/")
-    assert res.status_code == 200
-    assert res.json()["app"] == "FinPulse"
+def test_auth_login_and_verify(client):
+    # Test invalid key
+    res_invalid = client.post("/api/auth/login", json={"access_key": "WRONG-KEY"})
+    assert res_invalid.status_code == 401
+
+    # Test valid key
+    res_valid = client.post("/api/auth/login", json={"access_key": "ARTHA-2026"})
+    assert res_valid.status_code == 200
+    data = res_valid.json()
+    assert data["authenticated"] is True
+    assert "token" in data
+
+    # Test verify endpoint
+    token = data["token"]
+    res_verify = client.get("/api/auth/verify", headers={"Authorization": f"Bearer {token}"})
+    assert res_verify.status_code == 200
+    assert res_verify.json()["authenticated"] is True
 
     res_h = client.get("/health")
     assert res_h.status_code == 200
