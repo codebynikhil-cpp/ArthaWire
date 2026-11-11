@@ -195,3 +195,4 @@ docker-compose up --build
 
 ## 7. License & Compliance
 This software is provided for personal financial research. All data retrieval respects X Developer Policies, rate limits, and non-redistribution requirements.
+

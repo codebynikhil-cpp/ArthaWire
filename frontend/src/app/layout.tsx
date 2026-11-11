@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FinPulse — Real-Time Financial Intelligence Platform",
-  description: "Real-time financial intelligence monitoring X creators and Dalal Street (NSE/BSE) developments with AI NLP.",
+  title: "FinPulse — Institutional Financial Intelligence & X-Creator Terminal",
+  description: "Real-time Dalal Street (NSE/BSE) creator intelligence, FinBERT NLP sentiment analysis, multi-creator consensus & event detection.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
-      <body className="min-h-full flex flex-col bg-[#070b12] text-gray-100">{children}</body>
+      <body className="min-h-full flex flex-col bg-fin-bg text-fin-text selection:bg-blue-600/30 selection:text-white">
+        {children}
+      </body>
     </html>
   );
 }

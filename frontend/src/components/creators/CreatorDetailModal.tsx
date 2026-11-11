@@ -21,7 +21,7 @@ export const CreatorDetailModal: React.FC<CreatorDetailModalProps> = ({ creator,
       api
         .getCreatorAnalytics(creator.id)
         .then((data) => setAnalytics(data))
-        .catch(() => {})
+        .catch(() => { })
         .finally(() => setLoading(false));
     }
   }, [creator]);
@@ -29,21 +29,26 @@ export const CreatorDetailModal: React.FC<CreatorDetailModalProps> = ({ creator,
   if (!creator) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#111726] border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 space-y-6 text-white shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+      <div className="bg-fin-secondary border border-fin-border rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5 space-y-5 text-white shadow-card">
         {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-gray-800 pb-4">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-start justify-between border-b border-fin-border pb-3">
+          <div className="flex items-center space-x-3.5">
             <img
               src={
                 creator.profile_image_url ||
                 "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
               }
               alt={creator.display_name}
-              className="w-14 h-14 rounded-full border border-gray-700 object-cover"
+              className="w-12 h-12 rounded-full border border-fin-border object-cover"
             />
             <div>
-              <h2 className="text-lg font-bold">{creator.display_name}</h2>
+              <div className="flex items-center space-x-2">
+                <h2 className="text-base font-bold">{creator.display_name}</h2>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  {creator.is_active ? "ACTIVE" : "PAUSED"}
+                </span>
+              </div>
               <a
                 href={`https://x.com/${creator.username}`}
                 target="_blank"
@@ -51,104 +56,82 @@ export const CreatorDetailModal: React.FC<CreatorDetailModalProps> = ({ creator,
                 className="text-xs text-blue-400 hover:text-blue-300 font-mono flex items-center space-x-1"
               >
                 <span>@{creator.username}</span>
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-2.5 h-2.5" />
               </a>
-              <p className="text-xs text-gray-400 mt-1 max-w-xl">{creator.description}</p>
+              <p className="text-[11px] text-slate-300 mt-1 max-w-xl">{creator.description}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-gray-800 text-gray-400 hover:text-white transition"
+            className="p-1 rounded bg-fin-elevated text-fin-muted hover:text-white border border-fin-border transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {loading ? (
-          <div className="py-16 text-center text-xs text-gray-400 animate-pulse">
-            Loading analytics for @{creator.username}...
+          <div className="py-16 text-center text-xs text-fin-muted font-mono animate-pulse">
+            Compiling intelligence dossier for @{creator.username}...
           </div>
         ) : analytics ? (
-          <div className="space-y-6">
-            {/* Top Metrics Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="p-3.5 rounded-xl bg-gray-900/60 border border-gray-800">
-                <span className="text-[11px] text-gray-400 block uppercase">Total Tracked</span>
-                <span className="text-xl font-mono font-bold text-white">
+          <div className="space-y-5">
+            {/* Top Metrics Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 font-mono text-xs">
+              <div className="p-3 rounded bg-fin-card border border-fin-border">
+                <span className="text-[10px] text-fin-muted block uppercase">Total Tracked</span>
+                <span className="text-lg font-bold text-white tabular-nums">
                   {analytics.total_posts}
                 </span>
               </div>
-              <div className="p-3.5 rounded-xl bg-gray-900/60 border border-gray-800">
-                <span className="text-[11px] text-gray-400 block uppercase">Posts This Week</span>
-                <span className="text-xl font-mono font-bold text-emerald-400">
+              <div className="p-3 rounded bg-fin-card border border-fin-border">
+                <span className="text-[10px] text-fin-muted block uppercase">Posts This Week</span>
+                <span className="text-lg font-bold text-emerald-400 tabular-nums">
                   {analytics.posts_this_week}
                 </span>
               </div>
-              <div className="p-3.5 rounded-xl bg-gray-900/60 border border-gray-800">
-                <span className="text-[11px] text-gray-400 block uppercase">Top Stock Focus</span>
-                <span className="text-sm font-mono font-bold text-blue-400 truncate block">
-                  {analytics.top_discussed_companies[0]?.symbol || "Diverse"}
+              <div className="p-3 rounded bg-fin-card border border-fin-border">
+                <span className="text-[10px] text-fin-muted block uppercase">Primary Focus</span>
+                <span className="text-xs font-bold text-blue-400 truncate block mt-1">
+                  ${analytics.top_discussed_companies[0]?.symbol || "Diverse"}
                 </span>
               </div>
-              <div className="p-3.5 rounded-xl bg-gray-900/60 border border-gray-800">
-                <span className="text-[11px] text-gray-400 block uppercase">Top Sector</span>
-                <span className="text-sm font-medium text-purple-400 truncate block">
-                  {analytics.top_discussed_sectors[0]?.sector || "General"}
+              <div className="p-3 rounded bg-fin-card border border-fin-border">
+                <span className="text-[10px] text-fin-muted block uppercase">Primary Sector</span>
+                <span className="text-xs font-bold text-purple-300 truncate block mt-1">
+                  {analytics.top_discussed_sectors[0]?.sector || "Multi-Sector"}
                 </span>
               </div>
             </div>
 
-            {/* Sentiment & Sectors Charts */}
+            {/* Middle Grid: Sentiment Chart & Top Companies */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <SentimentChart distribution={analytics.sentiment_distribution} />
 
-              {/* Top Discussed Equities */}
-              <div className="bg-[#111726] border border-gray-800 rounded-xl p-5 space-y-3">
-                <h3 className="text-sm font-semibold text-white">Most Discussed Companies</h3>
-                <div className="space-y-2">
-                  {analytics.top_discussed_companies.map((comp) => (
+              <div className="bg-fin-card border border-fin-border rounded-lg p-4 space-y-3 shadow-terminal">
+                <h4 className="text-xs font-mono font-semibold text-white uppercase tracking-wider">
+                  Most Discussed Indian Companies
+                </h4>
+                <div className="space-y-1.5 max-h-[220px] overflow-y-auto">
+                  {analytics.top_discussed_companies.map((c) => (
                     <div
-                      key={comp.symbol}
-                      className="flex items-center justify-between p-2 rounded-lg bg-gray-900/40 border border-gray-800 text-xs"
+                      key={c.symbol}
+                      className="flex items-center justify-between p-2 rounded bg-fin-elevated/60 border border-fin-border text-xs"
                     >
                       <div className="flex items-center space-x-2">
-                        <span className="font-mono font-bold text-emerald-400">${comp.symbol}</span>
-                        <span className="text-gray-300 truncate max-w-[150px]">{comp.name}</span>
+                        <span className="font-mono font-bold text-emerald-400">${c.symbol}</span>
+                        <span className="text-slate-300 truncate max-w-[150px]">{c.name}</span>
                       </div>
-                      <span className="font-mono text-gray-400">{comp.mentions} mentions</span>
+                      <span className="font-mono font-bold text-white tabular-nums">
+                        {c.mentions} posts
+                      </span>
                     </div>
                   ))}
                   {analytics.top_discussed_companies.length === 0 && (
-                    <p className="text-xs text-gray-400 py-4 text-center">No specific company mentions</p>
+                    <p className="text-xs text-fin-muted py-6 text-center font-mono">
+                      No company mentions recorded yet
+                    </p>
                   )}
                 </div>
-              </div>
-            </div>
-
-            {/* Recent Posts History */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-white">Recent Historical Commentary</h3>
-              <div className="space-y-2">
-                {analytics.recent_posts.map((p) => (
-                  <div
-                    key={p.id}
-                    className="p-3 rounded-lg bg-gray-900/40 border border-gray-800 text-xs space-y-1.5"
-                  >
-                    <p className="text-gray-200">{p.text}</p>
-                    <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1">
-                      <span className="font-mono">{p.created_at.slice(0, 10)}</span>
-                      <a
-                        href={p.post_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-blue-400 hover:text-blue-300 flex items-center space-x-1"
-                      >
-                        <span>View X Post</span>
-                        <ExternalLink className="w-2.5 h-2.5" />
-                      </a>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>

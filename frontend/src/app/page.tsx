@@ -41,7 +41,9 @@ import {
   Coins,
   ChevronLeft,
   ChevronRight,
-  RefreshCw
+  RefreshCw,
+  Search,
+  ExternalLink
 } from "lucide-react";
 
 export default function Home() {
@@ -184,7 +186,6 @@ export default function Home() {
   const handleSimulatePost = async () => {
     try {
       await api.simulateLivePost();
-      // WebSocket will receive event and automatically prepend to stream
     } catch {}
   };
 
@@ -234,8 +235,8 @@ export default function Home() {
   const activeCount = creators.filter((c) => c.is_active).length;
 
   return (
-    <div className="min-h-screen bg-[#070b12] text-gray-100 flex flex-col font-sans">
-      {/* Top Navbar */}
+    <div className="min-h-screen bg-fin-bg text-fin-text flex flex-col font-sans">
+      {/* Top Navigation */}
       <Navbar
         wsConnected={wsConnected}
         isSyncing={isSyncing}
@@ -243,11 +244,19 @@ export default function Home() {
         onSimulate={handleSimulatePost}
         unreadNotificationsCount={unreadCount}
         onToggleNotifications={() => setIsDrawerOpen(true)}
-        ingestionMode={ingestionStatus?.mode || "SIMULATION"}
+        ingestionMode={ingestionStatus?.mode || "LIVE_X_API"}
+        searchQuery={filters.search || ""}
+        onSearchChange={(q) => {
+          setFilters((prev) => ({ ...prev, search: q }));
+          if (currentTab !== "feed" && q.trim().length > 0) {
+            setCurrentTab("feed");
+          }
+        }}
       />
 
+      {/* Main Terminal Shell */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
+        {/* Persistent Sidebar */}
         <Sidebar
           currentTab={currentTab}
           onTabChange={setCurrentTab}
@@ -256,45 +265,45 @@ export default function Home() {
           onOpenAddCreator={() => setIsAddCreatorOpen(true)}
         />
 
-        {/* Main Workspace Body */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        {/* Analytical Workspace */}
+        <main className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-5">
           {/* TAB 1: OVERVIEW */}
           {currentTab === "overview" && (
-            <div className="space-y-6">
-              {/* Stat Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="space-y-5 max-w-[1600px] mx-auto">
+              {/* Stat Cards Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
                 <StatCard
                   title="Monitored Creators"
                   value={`${activeCount} / ${creators.length}`}
-                  sublabel="10 max capacity limit"
+                  sublabel="Target: 10 Indian Market Creators"
                   trendColor="text-blue-400"
-                  icon={<Users className="w-5 h-5 text-blue-400" />}
+                  icon={<Users className="w-4 h-4 text-blue-400" />}
                 />
                 <StatCard
-                  title="Total Posts Ingested"
+                  title="Total Posts Collected"
                   value={overview?.total_posts_collected || 0}
-                  sublabel="Deduplicated & indexed"
+                  sublabel="Deduplicated & Checkpointed"
                   trendColor="text-emerald-400"
-                  icon={<Rss className="w-5 h-5 text-emerald-400" />}
+                  icon={<Rss className="w-4 h-4 text-emerald-400" />}
                 />
                 <StatCard
-                  title="Detected Today"
+                  title="Posts Detected Today"
                   value={overview?.posts_detected_today || 0}
-                  sublabel="Real-time ingestion"
+                  sublabel="Incremental Ingestion Stream"
                   trendColor="text-purple-400"
-                  icon={<Activity className="w-5 h-5 text-purple-400" />}
+                  icon={<Activity className="w-4 h-4 text-purple-400" />}
                 />
                 <StatCard
                   title="Consensus Clusters"
                   value={consensus?.total_consensus_clusters || 0}
-                  sublabel="Multi-creator discussions"
+                  sublabel="Multi-Creator Discussion Overlaps"
                   trendColor="text-amber-400"
-                  icon={<Sparkles className="w-5 h-5 text-amber-400" />}
+                  icon={<Sparkles className="w-4 h-4 text-amber-400" />}
                 />
               </div>
 
-              {/* Middle Row: Sentiment & Trending Topics */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Analytical Triad: Sentiment Donut, Trending Topics, Detected Events */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-1">
                   {overview && <SentimentChart distribution={overview.sentiment_distribution} />}
                 </div>
@@ -314,22 +323,27 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Quick Live Feed Preview */}
+              {/* Live Intelligence Feed Preview */}
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-b border-fin-border pb-2">
                   <div>
-                    <h3 className="text-sm font-semibold text-white">Live Intelligence Stream</h3>
-                    <p className="text-xs text-gray-400">Newly analyzed commentary across Dalal Street</p>
+                    <h3 className="text-xs font-mono font-semibold text-white uppercase tracking-wider">
+                      Live Stream Intel Preview
+                    </h3>
+                    <p className="text-[11px] text-fin-muted">
+                      Latest public commentary ingested & processed through FinBERT NLP
+                    </p>
                   </div>
                   <button
                     onClick={() => setCurrentTab("feed")}
-                    className="text-xs text-blue-400 hover:text-blue-300 font-medium"
+                    className="text-xs text-blue-400 hover:text-blue-300 font-mono flex items-center space-x-1"
                   >
-                    View All {postsTotal} Posts →
+                    <span>Inspect Full Feed ({postsTotal})</span>
+                    <ChevronRight className="w-3 h-3" />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {posts.slice(0, 4).map((p) => (
                     <PostCard
                       key={p.id}
@@ -347,7 +361,7 @@ export default function Home() {
 
           {/* TAB 2: LIVE FEED */}
           {currentTab === "feed" && (
-            <div className="space-y-5">
+            <div className="space-y-4 max-w-[1400px] mx-auto">
               <FeedFilters
                 creators={creators}
                 selectedCreatorId={filters.creator_id}
@@ -360,17 +374,17 @@ export default function Home() {
                 onReset={() => setFilters({})}
               />
 
-              <div className="flex items-center justify-between text-xs text-gray-400 px-1">
+              <div className="flex items-center justify-between text-xs text-fin-muted px-1 font-mono">
                 <span>
-                  Showing {posts.length} of {postsTotal} monitored financial posts
+                  Displaying {posts.length} of {postsTotal} indexed financial intelligence posts
                 </span>
-                <span className="flex items-center space-x-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Auto-updating via WebSockets</span>
+                <span className="flex items-center space-x-1.5 text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Real-Time WebSocket Feed</span>
                 </span>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3.5">
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
@@ -380,30 +394,30 @@ export default function Home() {
                 ))}
 
                 {posts.length === 0 && (
-                  <div className="bg-[#111726] border border-gray-800 rounded-xl p-12 text-center text-xs text-gray-400 space-y-2">
-                    <p className="text-sm font-semibold text-gray-300">No posts matched current filters</p>
-                    <p>Try resetting filters or triggering a new ingestion poll.</p>
+                  <div className="bg-fin-card border border-fin-border rounded-lg p-12 text-center text-xs text-fin-muted space-y-2 font-mono">
+                    <p className="text-sm font-semibold text-white">No intelligence posts matched criteria</p>
+                    <p>Adjust your surveillance filters or trigger an incremental sync above.</p>
                   </div>
                 )}
               </div>
 
-              {/* Pagination */}
+              {/* Pagination Controls */}
               {postsTotal > 15 && (
-                <div className="flex items-center justify-center space-x-3 pt-4">
+                <div className="flex items-center justify-center space-x-3 pt-3">
                   <button
                     onClick={() => loadPosts(Math.max(1, page - 1))}
                     disabled={page === 1}
-                    className="p-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-300 disabled:opacity-40"
+                    className="p-1.5 rounded bg-fin-card border border-fin-border text-fin-muted hover:text-white disabled:opacity-40 transition"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
-                  <span className="text-xs font-mono text-gray-400">
+                  <span className="text-xs font-mono text-fin-secondaryText tabular-nums">
                     Page {page} of {Math.ceil(postsTotal / 15)}
                   </span>
                   <button
                     onClick={() => loadPosts(page + 1)}
                     disabled={page * 15 >= postsTotal}
-                    className="p-2 rounded-lg bg-gray-900 border border-gray-800 text-gray-300 disabled:opacity-40"
+                    className="p-1.5 rounded bg-fin-card border border-fin-border text-fin-muted hover:text-white disabled:opacity-40 transition"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -412,26 +426,28 @@ export default function Home() {
             </div>
           )}
 
-          {/* TAB 3: CREATOR ANALYTICS */}
+          {/* TAB 3: CREATOR DIRECTORY */}
           {currentTab === "creators" && (
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
+            <div className="space-y-4 max-w-[1600px] mx-auto">
+              <div className="flex items-center justify-between border-b border-fin-border pb-3">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">Monitored Indian Financial Creators</h3>
-                  <p className="text-xs text-gray-400">
-                    Tracking up to 10 verified creators with posting frequency, sentiment and company coverage
+                  <h3 className="text-xs font-mono font-semibold text-white tracking-wider uppercase">
+                    Monitored Indian Financial Creators
+                  </h3>
+                  <p className="text-[11px] text-fin-muted">
+                    Surveillance cohort of curated Dalal Street market commentators with posting frequency and company focus
                   </p>
                 </div>
                 <button
                   onClick={() => setIsAddCreatorOpen(true)}
                   disabled={creators.length >= 10}
-                  className="px-3.5 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition disabled:opacity-50"
+                  className="px-3 py-1.5 text-xs font-mono font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded transition disabled:opacity-50"
                 >
                   Add Creator ({creators.length}/10)
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
                 {creators.map((c) => (
                   <CreatorCard
                     key={c.id}
@@ -448,7 +464,7 @@ export default function Home() {
 
           {/* TAB 4: MARKET INTELLIGENCE */}
           {currentTab === "market" && (
-            <div className="space-y-6">
+            <div className="space-y-4 max-w-[1600px] mx-auto">
               {marketIntel && (
                 <>
                   <TickerLeaderboard
@@ -459,7 +475,7 @@ export default function Home() {
                     }}
                   />
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <SectorBreakdown sectors={marketIntel.trending_sectors} />
                     <SpikesPanel spikes={marketIntel.unusual_spikes} />
                   </div>
@@ -470,31 +486,31 @@ export default function Home() {
 
           {/* TAB 5: AI CONSENSUS INSIGHTS */}
           {currentTab === "insights" && (
-            <div className="space-y-5">
-              <div className="flex items-center justify-between">
+            <div className="space-y-4 max-w-[1400px] mx-auto">
+              <div className="flex items-center justify-between border-b border-fin-border pb-3">
                 <div>
-                  <h3 className="text-sm font-semibold text-white">
-                    Multi-Creator Consensus & Divergence Briefings
+                  <h3 className="text-xs font-mono font-semibold text-white tracking-wider uppercase">
+                    Cross-Creator Consensus & Divergence Briefings
                   </h3>
-                  <p className="text-xs text-gray-400">
-                    Aggregated intelligence when 2 or more financial creators discuss the same stock or theme
+                  <p className="text-[11px] text-fin-muted">
+                    Automated multi-creator synthesis when 2 or more monitored accounts concurrently discuss the same Dalal Street company
                   </p>
                 </div>
-                <span className="text-xs font-mono text-purple-400">
-                  {consensus?.total_consensus_clusters || 0} Clusters Active
+                <span className="text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
+                  {consensus?.total_consensus_clusters || 0} Clusters Identified
                 </span>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3.5">
                 {consensus?.insights.map((ins) => (
                   <ConsensusCard key={ins.symbol} insight={ins} />
                 ))}
 
                 {(!consensus || consensus.insights.length === 0) && (
-                  <div className="bg-[#111726] border border-gray-800 rounded-xl p-12 text-center text-xs text-gray-400 space-y-2">
-                    <p className="text-sm font-semibold text-gray-300">No multi-creator clusters detected</p>
+                  <div className="bg-fin-card border border-fin-border rounded-lg p-12 text-center text-xs text-fin-muted space-y-2 font-mono">
+                    <p className="text-sm font-semibold text-white">No multi-creator consensus clusters active</p>
                     <p>
-                      Trigger a sync or simulate posts from multiple creators discussing Reliance or HDFC Bank to observe consensus clustering.
+                      Trigger a sync or use the "Simulate Post" action in the navbar to observe cross-creator synthesis.
                     </p>
                   </div>
                 )}
@@ -504,7 +520,7 @@ export default function Home() {
 
           {/* TAB 6: ALERTS & RULES */}
           {currentTab === "alerts" && (
-            <div className="space-y-6">
+            <div className="space-y-4 max-w-[1400px] mx-auto">
               <AlertRuleManager
                 rules={alertRules}
                 onRulesUpdated={loadAlertsAndNotifications}
@@ -514,7 +530,7 @@ export default function Home() {
 
           {/* TAB 7: X API & COST CALCULATOR */}
           {currentTab === "settings" && (
-            <div className="space-y-6">
+            <div className="space-y-4 max-w-[1400px] mx-auto">
               <IngestionControl
                 status={ingestionStatus}
                 onSyncAll={handleSyncAll}

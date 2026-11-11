@@ -1,26 +1,44 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #090D14;
+  --foreground: #F1F5F9;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Institutional Terminal Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #090D14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1B2637;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2A3C56;
+}
+
+/* Subtle card border glow */
+.terminal-card {
+  background-color: #111927;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.terminal-card:hover {
+  border-color: rgba(148, 163, 184, 0.22);
 }

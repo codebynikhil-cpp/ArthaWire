@@ -7,8 +7,10 @@ import {
   Bell,
   Zap,
   Radio,
+  Search,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Database
 } from "lucide-react";
 
 interface NavbarProps {
@@ -19,6 +21,8 @@ interface NavbarProps {
   unreadNotificationsCount: number;
   onToggleNotifications: () => void;
   ingestionMode: string;
+  searchQuery?: string;
+  onSearchChange?: (q: string) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -28,86 +32,109 @@ export const Navbar: React.FC<NavbarProps> = ({
   onSimulate,
   unreadNotificationsCount,
   onToggleNotifications,
-  ingestionMode
+  ingestionMode,
+  searchQuery = "",
+  onSearchChange
 }) => {
+  const isLiveX = ingestionMode === "LIVE_X_API";
+
   return (
-    <header className="sticky top-0 z-40 bg-[#0e131f]/95 backdrop-blur border-b border-gray-800 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        {/* Brand */}
-        <div className="flex items-center space-x-3">
-          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-            <Activity className="w-5 h-5 animate-pulse" />
+    <header className="sticky top-0 z-40 bg-fin-secondary/95 backdrop-blur border-b border-fin-border text-fin-text">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
+        {/* Brand & Market Focus */}
+        <div className="flex items-center space-x-3 shrink-0">
+          <div className="w-8 h-8 rounded bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-400">
+            <Activity className="w-4 h-4" />
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-bold text-lg tracking-wider text-white">FinPulse</span>
-              <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                NSE/BSE Intelligence
-              </span>
-            </div>
-            <p className="text-[11px] text-gray-400 hidden sm:block">
-              Real-Time Financial NLP & X-Creator Monitoring
-            </p>
+          <div className="flex items-baseline space-x-2">
+            <span className="font-bold text-base tracking-wider text-white font-mono">FINPULSE</span>
+            <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">
+              NSE / BSE INTEL
+            </span>
           </div>
         </div>
 
-        {/* Status badges & Actions */}
-        <div className="flex items-center space-x-3">
-          {/* WebSocket Status */}
+        {/* Global Terminal Search */}
+        <div className="hidden md:flex items-center flex-1 max-w-md mx-4">
+          <div className="relative w-full">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-fin-muted" />
+            <input
+              type="text"
+              placeholder="Search companies ($RELIANCE, $TCS), creators, topics, or events..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 text-xs bg-fin-card border border-fin-border rounded text-fin-text placeholder-fin-muted focus:outline-none focus:border-blue-500/60 font-sans transition"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
+              <kbd className="px-1.5 py-0.5 text-[9px] font-mono text-fin-muted bg-fin-elevated border border-fin-border rounded">
+                /
+              </kbd>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Badges & Quick Action Controls */}
+        <div className="flex items-center space-x-2.5 shrink-0">
+          {/* WebSocket Status Indicator */}
           <div
-            className={`hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-mono border ${
+            className={`flex items-center space-x-1.5 px-2.5 py-1 rounded text-[11px] font-mono border transition ${
               wsConnected
-                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
-                : "bg-amber-500/10 text-amber-400 border-amber-500/30"
+                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25"
+                : "bg-amber-500/10 text-amber-400 border-amber-500/25"
             }`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                wsConnected ? "bg-emerald-400 animate-ping" : "bg-amber-400"
+              className={`w-1.5 h-1.5 rounded-full ${
+                wsConnected ? "bg-emerald-400 animate-pulse" : "bg-amber-400"
               }`}
             />
-            <span>{wsConnected ? "STREAM LIVE" : "CONNECTING"}</span>
+            <span className="font-semibold tracking-wider">
+              {wsConnected ? "STREAM LIVE" : "CONNECTING"}
+            </span>
           </div>
 
-          {/* Mode Pill */}
+          {/* Ingestion Mode Pill */}
           <span
-            className={`hidden lg:inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${
-              ingestionMode === "LIVE_X_API"
-                ? "bg-purple-500/10 text-purple-400 border-purple-500/30"
-                : "bg-blue-500/10 text-blue-400 border-blue-500/30"
+            className={`hidden sm:inline-flex items-center space-x-1 px-2.5 py-1 rounded text-[11px] font-mono border ${
+              isLiveX
+                ? "bg-purple-500/10 text-purple-300 border-purple-500/30"
+                : "bg-blue-500/10 text-blue-300 border-blue-500/25"
             }`}
           >
-            {ingestionMode === "LIVE_X_API" ? "Official X API v2" : "Sandbox Simulator"}
+            <Database className="w-3 h-3" />
+            <span>{isLiveX ? "Official X API v2" : "Sandbox Simulator"}</span>
           </span>
 
-          {/* Simulate Live Post Button (for real-time demo) */}
+          {/* Quick Simulate Post Injection Button */}
           <button
             onClick={onSimulate}
-            title="Inject an immediate simulated post into the real-time stream"
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg transition"
+            title="Inject an immediate simulated Dalal Street post into the real-time stream"
+            className="flex items-center space-x-1.5 px-2.5 py-1 text-xs font-medium bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded transition"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            <Zap className="w-3 h-3 text-amber-400" />
             <span className="hidden sm:inline">Simulate Post</span>
           </button>
 
-          {/* Manual Sync Button */}
+          {/* Manual Ingestion Sync Button */}
           <button
             onClick={onSync}
             disabled={isSyncing}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium bg-gray-800 hover:bg-gray-750 text-gray-200 border border-gray-700 rounded-lg transition disabled:opacity-50"
+            title="Trigger incremental sync with checkpoints"
+            className="flex items-center space-x-1.5 px-2.5 py-1 text-xs font-medium bg-fin-card hover:bg-fin-hover text-fin-secondaryText hover:text-white border border-fin-border rounded transition disabled:opacity-50"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin text-blue-400" : ""}`} />
-            <span className="hidden sm:inline">{isSyncing ? "Syncing..." : "Sync Now"}</span>
+            <RefreshCw className={`w-3 h-3 ${isSyncing ? "animate-spin text-blue-400" : ""}`} />
+            <span className="hidden sm:inline">{isSyncing ? "Syncing..." : "Sync"}</span>
           </button>
 
-          {/* Notifications Button */}
+          {/* Notifications Center Toggle */}
           <button
             onClick={onToggleNotifications}
-            className="relative p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg border border-gray-800 transition"
+            title="Open Alerts & Notifications drawer"
+            className="relative p-1.5 text-fin-secondaryText hover:text-white hover:bg-fin-hover rounded border border-fin-border transition"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-3.5 h-3.5" />
             {unreadNotificationsCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 text-[10px] font-bold bg-rose-500 text-white rounded-full flex items-center justify-center animate-bounce">
+              <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] text-[9px] font-mono font-bold bg-rose-500 text-white rounded-full flex items-center justify-center px-0.5">
                 {unreadNotificationsCount > 9 ? "9+" : unreadNotificationsCount}
               </span>
             )}
