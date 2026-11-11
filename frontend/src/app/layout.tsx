@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FinPulse — Institutional Financial Intelligence & X-Creator Terminal",
+  title: "ArthaWire — Institutional Financial Intelligence & X-Creator Terminal",
   description: "Real-time Dalal Street (NSE/BSE) creator intelligence, FinBERT NLP sentiment analysis, multi-creator consensus & event detection.",
 };
 

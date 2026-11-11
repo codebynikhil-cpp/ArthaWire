@@ -16,7 +16,7 @@ export default function NotFound() {
             href="/"
             className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded transition inline-block"
           >
-            Return to FinPulse Terminal
+            Return to ArthaWire Terminal
           </Link>
         </div>
       </div>

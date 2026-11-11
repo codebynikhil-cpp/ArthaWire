@@ -73,7 +73,7 @@ export const AddCreatorModal: React.FC<AddCreatorModalProps> = ({
         </div>
 
         <p className="text-[11px] text-fin-muted">
-          Add an Indian market creator public handle. FinPulse will incrementally retrieve their public X posts and route them through the FinBERT financial NLP pipeline.
+          Add an Indian market creator public handle. ArthaWire will incrementally retrieve their public X posts and route them through the FinBERT financial NLP pipeline.
         </p>
 
         {error && (

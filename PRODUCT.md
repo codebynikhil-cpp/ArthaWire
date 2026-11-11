@@ -12,13 +12,13 @@ Individual Indian stock market investors, equities researchers, financial analys
 
 ## Product Purpose
 
-FinPulse is an institutional-grade personal financial intelligence and market research platform. It continuously tracks up to 10 selected Indian financial creators, automatically extracts their newly published public posts via the official X API v2, processes the unstructured text through local financial NLP models (FinBERT), and delivers actionable, traceable market intelligence on a real-time analytics terminal.
+ArthaWire is an institutional-grade personal financial intelligence and market research platform. It continuously tracks up to 10 selected Indian financial creators, automatically extracts their newly published public posts via the official X API v2, processes the unstructured text through local financial NLP models (FinBERT), and delivers actionable, traceable market intelligence on a real-time analytics terminal.
 
 Success means eliminating the noise and manual effort of checking social media for market commentary, converting scattered discussions into structured sentiment, detecting corporate events, and identifying emerging multi-creator consensus or divergence.
 
 ## Positioning
 
-Unlike generic social media monitors or automated trading bots, FinPulse functions strictly as an analytical research instrument. It never fabricates prices, never executes trades, maintains strict provenance linking every AI briefing to its original X post, and visually segregates subjective creator opinions from verified empirical corporate announcements.
+Unlike generic social media monitors or automated trading bots, ArthaWire functions strictly as an analytical research instrument. It never fabricates prices, never executes trades, maintains strict provenance linking every AI briefing to its original X post, and visually segregates subjective creator opinions from verified empirical corporate announcements.
 
 ## Operating Context
 

@@ -1,5 +1,5 @@
 ---
-name: FinPulse
+name: ArthaWire
 description: Institutional Financial Intelligence & Dalal Street Surveillance Terminal
 colors:
   primary: "#38BDF8"
@@ -87,7 +87,7 @@ components:
 
 ## Overview
 
-FinPulse's visual identity embodies the discipline, restraint, and information density of high-tier institutional investment research terminals (Bloomberg Terminal, TradingView, Linear, Stripe Dashboard).
+ArthaWire's visual identity embodies the discipline, restraint, and information density of high-tier institutional investment research terminals (Bloomberg Terminal, TradingView, Linear, Stripe Dashboard).
 
 The design prioritizes analytical scanability over consumer-grade decoration. High-contrast financial typography, muted midnight surfaces, hairline slate borders, and strict semantic color discipline ensure market researchers can ingest complex Dalal Street intelligence at high velocity.
 
@@ -114,7 +114,7 @@ Colors carry strict financial meaning and are never used as generic decoration:
 
 ## Typography
 
-FinPulse employs a dual-font system pairing geometric clarity with monospace precision:
+ArthaWire employs a dual-font system pairing geometric clarity with monospace precision:
 - **Primary Interface:** `Geist Sans` / `Inter` (`11px` to `14px`) for narrative body, creator bios, and analytical summaries.
 - **Financial Monospace:** `Geist Mono` / `JetBrains Mono` for stock tickers (`$RELIANCE`), tabular metrics, timestamps, and model version tags.
 
@@ -132,7 +132,7 @@ All stock prices, mention counts, percentages, and timestamps must use `tabular-
 
 ## Elevation & Depth
 
-FinPulse favors **tonal elevation over heavy drop shadows**:
+ArthaWire favors **tonal elevation over heavy drop shadows**:
 - Surfaces rise in lightness as they approach the user (`#090D14` → `#0E1420` → `#111927` → `#1B2637`).
 - Shadows are restrained (`box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4)`).
 - Hairline borders (`border-fin-border`) provide crisp boundary separation without blurry glow effects.

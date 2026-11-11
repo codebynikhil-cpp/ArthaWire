@@ -1,4 +1,4 @@
-# FinPulse — Real-Time X-Based Financial Intelligence Platform
+# ArthaWire — Real-Time X-Based Financial Intelligence Platform
 
 > **Dalal Street Financial Research & Intelligence Assistant (NSE/BSE Focus)**  
 > Transforms scattered commentary across curated Indian financial creators on X (formerly Twitter) into structured, searchable, and continuously updated market intelligence.
@@ -7,13 +7,13 @@
 
 ## 1. Project Overview & Philosophy
 
-**FinPulse** is a specialized financial intelligence platform designed for investors, equity analysts, and financial researchers tracking the Indian stock market (NSE/BSE).
+**ArthaWire** is a specialized financial intelligence platform designed for investors, equity analysts, and financial researchers tracking the Indian stock market (NSE/BSE).
 
-Instead of drowning in noisy social feeds or relying on automated trading black boxes, FinPulse continuously monitors up to 10 selected financial creators, automatically extracts their newly published posts via the official X API v2, processes the text through an AI/NLP pipeline (FinBERT, Indian listed equity & ticker mapping, 14-topic classification, event detection, opinion vs. fact separation, and structured summarization), and surfaces actionable intelligence on a real-time dark financial research terminal.
+Instead of drowning in noisy social feeds or relying on automated trading black boxes, ArthaWire continuously monitors up to 10 selected financial creators, automatically extracts their newly published posts via the official X API v2, processes the text through an AI/NLP pipeline (FinBERT, Indian listed equity & ticker mapping, 14-topic classification, event detection, opinion vs. fact separation, and structured summarization), and surfaces actionable intelligence on a real-time dark financial research terminal.
 
 > [!IMPORTANT]
 > **Research Platform Disclaimer:**  
-> FinPulse is built strictly as a personal research and intelligence platform. It does not provide automated trading, robo-advisory, or verified stock recommendations. Every AI-generated insight clearly separates creator subjective opinions from verified corporate disclosures and links directly to its original X post.
+> ArthaWire is built strictly as a personal research and intelligence platform. It does not provide automated trading, robo-advisory, or verified stock recommendations. Every AI-generated insight clearly separates creator subjective opinions from verified corporate disclosures and links directly to its original X post.
 
 ---
 
@@ -27,7 +27,7 @@ Instead of drowning in noisy social feeds or relying on automated trading black 
                                                 │ Polling & Ingestion
                                                 ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│                               FinPulse Backend (FastAPI)                                   │
+│                               ArthaWire Backend (FastAPI)                                  │
 │                                                                                            │
 │  ┌───────────────────────┐   ┌─────────────────────────────┐   ┌────────────────────────┐  │
 │  │   APScheduler Engine  │──▶│   Checkpointer & Dedup      │──▶│  SQLAlchemy Relational │  │
@@ -57,7 +57,7 @@ Instead of drowning in noisy social feeds or relying on automated trading black 
                                               │                               │
                                               ▼                               ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│                          FinPulse Frontend (Next.js 15 + React 19)                         │
+│                          ArthaWire Frontend (Next.js 15 + React 19)                        │
 │                                                                                            │
 │  • Overview Dashboard (Real-time metrics, Sentiment Donut, Trending Topics, Recent Events)  │
 │  • Live Feed (Instant post streaming, entity pills, sentiment badges, AI briefings)        │
@@ -100,7 +100,7 @@ Built-in financial model that calculates monthly X API requests and compares off
 - **Free Tier ($0/mo)**: 100 reads/mo — strictly for write testing.
 - **Basic Tier ($100/mo)**: 10,000 reads/mo — viable for 10 creators at 30-60 min intervals.
 - **Pro Tier ($5,000/mo)**: 1,000,000 reads/mo — commercial real-time filtered stream.
-- **FinPulse Simulation Mode ($0/mo)**: Zero operational cost for personal research and testing.
+- **ArthaWire Simulation Mode ($0/mo)**: Zero operational cost for personal research and testing.
 
 ---
 

@@ -7,12 +7,12 @@ env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
 class Settings:
-    PROJECT_NAME: str = "FinPulse"
+    PROJECT_NAME: str = "ArthaWire"
     VERSION: str = "1.0.0"
     API_V1_PREFIX: str = "/api"
     
     # Database: SQLite for local dev, PostgreSQL ready
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./finpulse.db")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./arthawire.db")
     
     # Official X API v2 credentials
     X_BEARER_TOKEN: str = os.getenv("X_BEARER_TOKEN", "")

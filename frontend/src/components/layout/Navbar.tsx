@@ -47,7 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Activity className="w-4 h-4" />
           </div>
           <div className="flex items-baseline space-x-2">
-            <span className="font-bold text-base tracking-wider text-white font-mono">FINPULSE</span>
+            <span className="font-bold text-base tracking-wider text-white font-mono">ARTHAWIRE</span>
             <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">
               NSE / BSE INTEL
             </span>
